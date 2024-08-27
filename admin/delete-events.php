@@ -1,214 +1,205 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to edit this template
--->
 <?php
+session_start();
+
 $pageTitle = "Delete event";
 
 include './includes/dbConnector.php';
 include './includes/helpers.php';
+include './class/event';
 
+$dbConnection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
-if(isset($_GET['id'])){
+if ($dbConnection->connect_error) {
+    die("Connection failed: " . $dbConnection->connect_error);
+}
+
+if ($_SESSION['position'] !== 'Admin' && $_SESSION['position'] !== 'admin') {
+  echo "<script>alert('You do not have permission to delete this events.');window.location.href = 'Events.php';</script>";
+  exit();
+}
+
+$event = new Event($dbConnection);
+
+if (isset($_GET['id'])) {
     $eventId = trim($_GET['id']);
     
-    
-    $dbConnection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-    
-    $selectCommand = "SELECT * FROM villain WHERE EventID = '$eventId'";
-    
-    $result = mysqli_query($dbConnection, $selectCommand);
-    
-    
-   if ($result->num_rows==1){
-        $villain = mysqli_fetch_object($result);
-        
-        //var_dump($student);
-        
+    $villain = $event->getEventById($eventId);
+
+    if ($villain) {
         $eventId = $villain->EventID;
         $eventName = $villain->EventName;
         $description = $villain->Description;
         $startDate = $villain->StartDate;
         $seat = $villain->Seat;
+    } else {
+        echo "<script>alert('Event not found.');</script>";
     }
 }
 
-if (isset($_POST['btnSubmit'])){
-    global $eventId;
-    
-    $deleteCommand = "DELETE FROM villain WHERE EventID = '$eventId'";
-    
-    $result = mysqli_query($dbConnection, $deleteCommand);
-    
-    echo "<div class='question'>";
-        echo "This Event has been delete successfully. [<a href='Events.php'>All Event List</a>]";
-        echo "</div>";
+if (isset($_POST['btnSubmit'])) {
+    if ($event->deleteEvent($eventId)) {
+        echo "<script>
+                alert('This Event has been deleted successfully.\\n\\nClick OK to go to the Event List.');
+                window.location.href = 'Events.php';
+            </script>";
+    } else {
+        echo "<script>alert('Failed to delete the event.');</script>";
+    }
 }
 
+$dbConnection->close();
 ?>
+<head lang="en">
+   <meta charset="utf-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1" />
+   <title>Delete Events Form</title>
+   <link rel="stylesheet" href="../assets/css/admin/bootstrap.min.css">
+</head>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
-
-*
-{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
-body{
-    margin:0;
-    padding:0;
-    background-color: #1c1c1c;
-}
-.block{
-    position: relative;
-    margin:5% auto 0;
-    width: 70%;
-    height: 400px auto;
-    background: linear-gradient(0deg, black, rgb(44,43,43));
-    padding: 50px 40px;
-    display: flex;
-    flex-direction: column;
-}
-
-.block::before, .block::after
-{
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    width: calc(100% + 5px);
-    height: calc(100% + 5px);
-    background: linear-gradient(45deg, #e6fb04, #ff6600, #00ff66, #00ffff,
-    #ff00ff, #ff0099, #6e0dd0, #ff3300, #099fff);
-    background-size: 200%;
-    animation: animate 20s linear infinite;
+  body {
+  font-family: "Roboto", sans-serif;
+  background-color: #686868;
+  line-height: 1.9;
+  color: #8c8c8c;
+  position: relative; }
+  body:before {
     z-index: -1;
-}
-
-h2{
-    color: #45f3ff;
-    font-weight: 800;
-    font-size: 35px;
-    text-align: center;
-    letter-spacing: 0.1em;
-}
-
-.box{
-    position: relative;
-    width: 300px;
-    margin-top: 50px;
-}
-
-.box p{
-    position: relative;
-    width: 500px;
-    padding: 20px 10px 10px;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #23242a;
-    font-size: 1em;
-    letter-spacing: 0.05em;
-    z-index: 10;
-    margin-top: 20px;
-    color: white;
-    background-color: black;
-}
-
-.box h1{
     position: absolute;
+    height: 50vh;
+    content: "";
+    top: 0;
     left: 0;
-    padding: 3px 3px 3px;
-    font-size: 1em;
-    color: #FFFFFF; 
-    pointer-events: none;
-    letter-spacing: 0.05em;
-    transition: 0.5s;
+    right: 0;
+    background: #F0F0F0; }
+
+a {
+  text-decoration: none;
+  display: inline-block;
+  padding: 5px 20px;
 }
 
-input[type="submit"]{
-    border: none;
-    outline: no;
-    background: #45f3ff;
-    padding: 11px 25px;
-    width:300px;
-    margin-top: 30px;
-    border-radius: 4px;
-    font-weight: 600;
-    margin-left: 30px;
+a:hover {
+  background-color: #ddd;
+  color: black;
+  text-decoration: none;
 }
 
-input[type="reset"]{
-    border: none;
-    outline: no;
-    background: #45f3ff;
-    padding: 11px 25px;
-    width:300px;
-    margin-top: 10px;
-    border-radius: 4px;
-    font-weight: 600;
-    margin-left: 30px;
+.previous {
+  background-color: #F0F0F0;
+  color: black;
 }
 
-@keyframes animate{
-    0%{
-       background-position: 0 0; 
+.text-black {
+  color: #000; }
+
+.content {
+  padding: 7rem 0; }
+
+.heading {
+  font-size: 2.5rem;
+  font-weight: 900; }
+
+.form-control {
+  border: none;
+  border-bottom: 1px solid #ccc;
+  padding-left: 0;
+  padding-right: 0;
+  border-radius: 0;
+  height: auto;
+  background: #f2f2f2;
+  }
+  .form-control:active, .form-control:focus {
+    outline: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
     }
-    50%{
-       background-position: 400% 0; 
-    }
-    100%{
-       background-position: 0 0; 
-    } 
-}
+
+.col-form-label {
+  font-size: 13px; 
+  }
+
+.btn, .custom-select {
+  height: 45px; }
+
+.btn {
+  border: none;
+  border-radius: 0;
+  font-size: 12px;
+  letter-spacing: .2rem;
+  text-transform: uppercase; }
+  .btn.btn-primary {
+    background: #35477d;
+    color: #fff;
+    padding: 15px 20px; }
+  .btn:hover {
+    color: #fff; }
+  .btn:active, .btn:focus {
+    outline: none;
+    -webkit-box-shadow: none;
+    box-shadow: none; }
+
+.contact-wrap {
+  -webkit-box-shadow: 0 0px 20px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0px 20px 0 rgba(0, 0, 0, 0.2); }
+  .contact-wrap .col-form-label {
+    font-size: 14px;
+    color: #686868;
+    margin: 0 0 10px 0;
+    display: inline-block;
+    padding: 0; }
+  .contact-wrap .form, .contact-wrap .contact-info {
+    padding: 40px; }
+  .contact-wrap .contact-info {
+    color: rgba(255, 255, 255, 0.5); }
+  .contact-wrap .form {
+    background: #fff; }
+    .contact-wrap .form h3 {
+      color: #35477d;
+      font-size: 20px;
+      margin-bottom: 30px; }
 </style>
-<ul>
-  <li>
-  <a href="Events.php">Go Back</a>
-  </li>
-</ul>
+<a href="Events.php" class="previous">&laquo; Go Back</a>
 <body>
-    <div class="block">
-        <h2>DELETE EVENTS</h2>
-<form method="POST" action="">  
-    <table border="1">
-        <div class="box">
-            <h1>Events ID:</h1>
-            </br>
-            <p><?php global $eventId; echo $eventId;?></p>
+     <div class="content">
+     <div class="container">
+    <div class="row align-items-stretch no-gutters contact-wrap">
+        <div class="form h-100">
+          <h3>Delete events</h3>
+    <form method="POST" class="mb-5">
+    <div class="row">
+        <div class="col-md-6 form-group mb-5">
+            <label for="box" class="col-form-label">Events ID</label>
+            <p class="form-control"><?php global $eventId; echo $eventId;?></p>
         </div>
-        
-        <div class="box">
-            <h1>Events Name:</h1>
-            </br>
-            <p><?php global $eventName; echo $eventName;?></p>
+
+    <div class="col-md-6 form-group mb-5">
+            <label for="seatNumBox" class="col-form-label">Events Name</label>
+            <p class="form-control"><?php global $eventName; echo $eventName;?></p>
         </div>
-        
-        <div class="box">
-            <h1>Events Seat Number:</h1>
-            </br>
-            <p><?php global $seat; echo $seat;?></p>
+
+    <div class="col-md-6 form-group mb-5">
+            <label for="dateBox" class="col-form-label">Seat Number</label>
+            <p class="form-control"><?php global $seat; echo $seat;?></p>
         </div>
-      
-        <div class="box">
-            <h1>Events Description:</h1>
-            </br>
-            <p><?php global $description; echo $description;?></p>
+
+    <div class="col-md-6 form-group mb-5">
+            <label for="dateBox" class="col-form-label">Start Date</label>
+            <p class="form-control"><?php global $startDate; echo $startDate;?></p>
         </div>
-        
-        <div class="box">
-            <h1>Events Start Date:</h1>
-            </br>
-            <p><?php global $startDate; echo $startDate;?></p>
+
+    <div class="row">
+        <div class="col-md-12 form-group mb-5">
+            <label for="descriptionBox" class="col-form-label">Description</label>
+            <p class="form-control"><?php global $description; echo $description;?></p>
         </div>
-        
-    </table>
-    <br/>
-    <input type="submit" name="btnSubmit" value ="Yes"/>
-    <input type="reset" name="btnCancel" value ="Cancel" 
-       onclick="location='Events.php'"/>
+    </div>
+    <div class="col-md-12 text-center form-group">
+        <input type="submit" name="btnSubmit" value="Delete" class="btn btn-primary rounded-0 py-2 px-4" style="background-color: green; color: white;" />
+        <input type="reset" name="btnCancel" value="Cancel" onclick="location='Events.php'" class="btn btn-primary rounded-0 py-2 px-4" style="background-color: red; color: white;" />
+    </div>
+</form>
+     </div>
+</body>
 </form>
 </body>

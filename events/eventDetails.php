@@ -1,16 +1,50 @@
-<?php include("../source/header.php");?>
+<?php
+ $pageTitle = "Edit Events";
 
-  <main>
-    <article>
+include '../source/header.php';
+include '../source/mysqli_connect.php';
 
-      <!-- 
-        - #HERO
-      -->
+if (isset($_GET['id'])) {
+  $eventId = trim($_GET['id']);
 
-      <section id="hero" style="background: url('/villain/assets/images/event1/hero-banner.png') no-repeat;background-size: cover;  background-position: top center;  margin-top: 90px;  padding: var(--section-padding) 0;  height: 100vh; /** Default: 100vh**/  max-height: 1000px;  display: flex;  justify-content: center;  align-items: center;  text-align: center;">
-        <div class="container">
+  $selectCommand = "SELECT * FROM villain WHERE EventID = '$eventId'";
+  $result = mysqli_query($dbc, $selectCommand);
 
-          <p class="hero-subtitle">League Of Legends</p>
+  if ($result->num_rows == 1) {
+      $villain = mysqli_fetch_object($result);
+
+      $eventId = htmlspecialchars($villain->EventID);
+      $eventName = htmlspecialchars($villain->EventName);
+      $description = htmlspecialchars($villain->Description);
+      $startDate = htmlspecialchars($villain->StartDate);
+      $seat = htmlspecialchars($villain->Seat);
+
+      $lines = explode("\n", $description);
+
+      if (count($lines) > 1) {
+          $location = htmlspecialchars($lines[0]);
+          $desc = htmlspecialchars($lines[1]);
+      } else {
+          $location = htmlspecialchars($description); 
+          $desc = ''; 
+      }
+
+      // Check for image file existence
+      // $imageFile = '../assets/images/event/' . $eventId . '/hero-banner.png';
+      // if (!file_exists($_SERVER['DOCUMENT_ROOT'] . $imageFile)) {
+      //     $imageFile = '../assets/images/event/' . $eventId . '/hero-banner.jpg';
+      // }
+  }
+}
+?>
+
+<main>
+  <article>
+  <section id="hero" style="background: url('../assets/images/event/<?= htmlspecialchars($eventId) ?>/hero-banner.png') no-repeat; background-size: cover; background-position: top center; margin-top: 90px; padding: var(--section-padding) 0; height: 100vh; max-height: 1000px; display: flex; justify-content: center; align-items: center; text-align: center;">
+
+            <div class="container">
+
+          <p class="hero-subtitle"><?php global $eventName; echo $eventName;?></p>
 
           <h1 class="h1 hero-title">Esport</h1>
 
@@ -29,22 +63,17 @@
         </div>
       </section>
 
-
-
-
-
-      <div class="section-wrapper">
-
-        <!-- 
-          - #ABOUT
+       <!-- 
+          - #About us
         -->
+      <div class="section-wrapper">
 
         <section class="about" id="about">
           <div class="container">
 
             <figure class="about-banner">
 
-              <img src="../assets/images/event1/about-img.jpg" alt="about-img" class="about-img">
+              <img src="../assets/images/event/<?= $eventId ?>/about-img.jpg" alt="about-img" class="about-img">
 
             </figure>
 
@@ -52,23 +81,41 @@
 
               <p class="about-subtitle">About section</p>
 
-              <h2 class="about-title">LOL <strong>Strategy</strong> Sharing </h2>
+              <h2 class="about-title" style="font-size:33px">
+               <?php global $eventName; echo $eventName; ?><strong> Strategy</strong> Sharing
+              </h2>
+
 
               <p class="about-text">
-                Get familiar with top international LOL Esport team strategies and also get to know what a day in a life as a Esport coach looks like!
+                Get familiar with top international Esport team strategies and also get to know what a day in a life as a Esport coach looks like!
               </p>
-
-              <p class="about-bottom-text">
-                <ion-icon name="arrow-forward-circle-outline"></ion-icon>
-
-                <span>Will familiar with LOL esport strategy and get to know a day in a life as an esport coach</span><br>
-              </p>
-
             </div>
 
           </div>
         </section>
 
+        <!-- 
+          - #Description
+        -->
+        <section class="description" id="description">
+          <div class="container">
+
+            <h2 class="h2 section-title">Description</h2>
+            <div style="background-color: #333; padding: 20px; width: 100%; min-height: 200px; box-sizing: border-box;">
+
+
+            <p class="about-subtitle">Location</p>
+            <h2 class="about-title" style="font-size:33px; color:whitesmoke;">
+            <?php echo $location; ?>
+            </h2>
+
+
+            <p class="about-text">
+            <?php echo $desc; ?>
+            </p>
+            </div>
+          </div>
+        </section>
         <!-- 
           - #GALLERY
         -->
@@ -80,25 +127,25 @@
 
               <li>
                 <figure class="gallery-item">
-                  <img src="../assets/images/event1/gallery-img-1.jpg" alt="Gallery image">
+                  <img src="../assets/images/event/<?= $eventId ?>/gallery-img-1.jpg" alt="Gallery image">
                 </figure>
               </li>
 
               <li>
                 <figure class="gallery-item">
-                  <img src="../assets/images/event1/gallery-img-2.jpg" alt="Gallery image">
+                  <img src="../assets/images/event/<?= $eventId ?>/gallery-img-2.jpg" alt="Gallery image">
                 </figure>
               </li>
 
               <li>
                 <figure class="gallery-item">
-                  <img src="../assets/images/event1/gallery-img-3.jpg" alt="Gallery image">
+                  <img src="../assets/images/event/<?= $eventId ?>/gallery-img-3.jpg" alt="Gallery image">
                 </figure>
               </li>
 
               <li>
                 <figure class="gallery-item">
-                  <img src="../assets/images/event1/gallery-img-4.jpg" alt="Gallery image">
+                  <img src="../assets/images/event/<?= $eventId ?>/gallery-img-4.jpg" alt="Gallery image">
                 </figure>
               </li>
 
@@ -106,11 +153,6 @@
 
           </div>
         </section>
-        
-
-
-
-
         <!-- 
           - #TEAM (Speakers)
         -->
@@ -125,7 +167,7 @@
               <li>
                 <a href="#" class="speaker-member">
                   <figure>
-                    <img src="../assets/images/event1/speaker-member-1.png" alt="Speaker image">
+                    <img src="../assets/images/event/<?= $eventId ?>/speaker-member-1.png" alt="Speaker image">
                   </figure>
 
                   <ion-icon name="link-outline"></ion-icon>
@@ -135,7 +177,7 @@
               <li>
                 <a href="#" class="speaker-member">
                   <figure>
-                    <img src="../assets/images/event1/speaker-member-2.png" alt="Speaker image">
+                    <img src="../assets/images/event/<?= $eventId ?>/speaker-member-2.png" alt="Speaker image">
                   </figure>
 
                   <ion-icon name="link-outline"></ion-icon>
@@ -145,33 +187,15 @@
               <li>
                 <a href="#" class="speaker-member">
                   <figure>
-                    <img src="../assets/images/event1/speaker-member-3.png" alt="Speaker image">
+                    <img src="../assets/images/event/<?= $eventId ?>/speaker-member-3.png" alt="Speaker image">
                   </figure>
 
                   <ion-icon name="link-outline"></ion-icon>
                 </a>
               </li>
-
-              <li>
-                <a href="#" class="speaker-member">
-                  <figure>
-                    <img src="../assets/images/event1/speaker-member-4.png" alt="Speaker image">
-                  </figure>
-
-                  <ion-icon name="link-outline"></ion-icon>
-                </a>
-              </li>
-
             </ul>
-            <!--
-            <button class="btn btn-primary">view all members</button>
-            -->
           </div>
         </section>
-
-
-
-       
 
         <!-- 
           - #TICKETS

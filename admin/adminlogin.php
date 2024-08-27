@@ -264,6 +264,41 @@ alert("Access Denied.");
     </div>
 </div>
 </div>
+<?php
+session_start();
+require_once 'conn.php';
+
+if (isset($_POST['email']) && isset($_POST['password'])) {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    
+    if (!empty($email) && !empty($password)) {
+        $stmt = $conn->prepare("SELECT * FROM admin WHERE email = ? AND password = ?");
+        $hashedPassword = md5($password); 
+        $stmt->bind_param("ss", $email, $hashedPassword);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows === 1) {
+            $row = $result->fetch_assoc();
+            $_SESSION['admin_id'] = $row['admin_id'];
+            $_SESSION['position'] = $row['position'];
+            $_SESSION['name'] = $row['name']; 
+            
+            session_regenerate_id(true); 
+            
+            header("Location: home.php");
+            exit();
+        } else {
+            echo "<script>alert('Invalid email or password.');</script>";
+        }
+        $stmt->close();
+    } else {
+        echo "<script>alert('Please fill in both fields.');</script>";
+    }
+}
+$conn->close();
+?>
 <script src="assets/js/jquery-1.12.4-jquery.min.js"></script>
 
 </body>

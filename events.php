@@ -10,21 +10,15 @@ session_start();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VILLAIN</title>
 
-  <!-- 
-    - favicon link
-  -->
+
   <link rel="shortcut icon" href="/villain/assets/images/logo.png" type="image/png">
 
-  <!-- 
-    - custom css link
-  -->
+
   <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
   <link rel="stylesheet" type="text/css" href="./assets/css/events.css">
   <link rel="stylesheet" type="text/css" href="assets/css/login-signup.css">
 
-  <!-- 
-    - google font link
-  -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -191,91 +185,65 @@ session_start();
 
       <div class="section-wrapper">
   
-        <div class="events" id="events">
-            <ul>
-                <?php
-                require_once ('./source/mysqli_connect.php');
-                // SQL statement that fetch all events
-                $q = "SELECT EventName, Description, StartDate FROM villain WHERE EventID > 1;";
-                $r = mysqli_query ($dbc, $q);// Run the query.
-                $allEvents = mysqli_fetch_all($r, MYSQLI_ASSOC);
-                $count = 1;
-                foreach ($allEvents as $event) {
-                    $startDate = explode("-", $event["StartDate"]);
-                    $year = $startDate[0];
-                    $month = $startDate[1];
-                    $day = $startDate[2];
-                    $eventName = $event["EventName"];
-                    $location = explode("\n", $event["Description"])[0];
-                    $desc = explode("\n", $event["Description"])[1];
-                    
-                    switch ($month) {
-                        case 1:
-                            $month = "January";
-                            break;
-                        case 2:
-                            $month = "February";
-                            break;
-                        case 3:
-                            $month = "March";
-                            break;
-                        case 4:
-                            $month = "April";
-                            break;
-                        case 5:
-                            $month = "May";
-                            break;
-                        case 6:
-                            $month = "June";
-                            break;
-                        case 7:
-                            $month = "July";
-                            break;
-                        case 8:
-                            $month = "August";
-                            break;
-                        case 9:
-                            $month = "September";
-                            break;
-                        case 10:
-                            $month = "October";
-                            break;
-                        case 11:
-                            $month = "November";
-                            break;
-                        case 12:
-                            $month = "December";
-                            break;
-                        default:
-                            $month = "Invalid";
-                            break;
-                    }
-                    
-                    echo ' 
-                    <li>
-                        <div class="time">
-                            <h2>
-                                '.$day.' <br><span>'.$month.'</span>
-                            </h2>
-                        </div>
-                        <div class="details">
-                            <h3>
-                                '.$eventName.' ('.$location.')
-                            </h3> 
-                            <p>
-                                '.$desc.'
-                            </p>
-                            <br/>
-                            <a href="events/event'.$count.'.php">View Details</a>
-                        </div>
-                        <div style="clear: both;"></div>
-                    </li>
-                    ';
-                    $count++;
-                }
-                ?>
-            </ul>
-        </div>
+      <div class="events" id="events">
+    <ul>
+        <?php
+        require_once ('./source/mysqli_connect.php');
+        $q = "SELECT EventID, EventName, Description, StartDate FROM villain WHERE EventID >= 1;";
+        $r = mysqli_query($dbc, $q);
+        $allEvents = mysqli_fetch_all($r, MYSQLI_ASSOC);
+        $count = 1;
+        foreach ($allEvents as $event) {
+            $startDate = explode("-", $event["StartDate"]);
+            $year = $startDate[0];
+            $month = $startDate[1];
+            $day = $startDate[2];
+            $eventName = $event["EventName"];
+            $location = explode("\n", $event["Description"])[0];
+            $desc = explode("\n", $event["Description"])[1];
+            $eventID = $event["EventID"]; 
+
+            switch ($month) {
+                case 1: $month = "January"; break;
+                case 2: $month = "February"; break;
+                case 3: $month = "March"; break;
+                case 4: $month = "April"; break;
+                case 5: $month = "May"; break;
+                case 6: $month = "June"; break;
+                case 7: $month = "July"; break;
+                case 8: $month = "August"; break;
+                case 9: $month = "September"; break;
+                case 10: $month = "October"; break;
+                case 11: $month = "November"; break;
+                case 12: $month = "December"; break;
+                default: $month = "Invalid"; break;
+            }
+
+            echo ' 
+            <li>
+                <div class="time">
+                    <h2>
+                        '.$day.' <br><span>'.$month.'</span>
+                    </h2>
+                </div>
+                <div class="details">
+                    <h3>
+                        '.$eventName.' ('.$location.')
+                    </h3> 
+                    <p>
+                        '.$desc.'
+                    </p>
+                    <br/>
+                    <a href="events/eventDetails.php?id='.$eventID.'">View Details</a>
+                </div>
+                <div style="clear: both;"></div>
+            </li>
+            ';
+            $count++;
+        }
+        ?>
+    </ul>
+</div>
 
 <?php include("./source/footer.php");?>
 

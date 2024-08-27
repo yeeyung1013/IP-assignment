@@ -14,70 +14,148 @@ function validateId($eventId){
     return $errMsgId;
 }
 
-function validateTitle($eventName){
+// function validateTitle($eventName){
+//     $errMsgTile = array();
+    
+//     if($eventName == "" || $eventName == null){
+//         $errMsgTile[] = "Please enter your event name";
+//     }
+    
+//     if(strlen($eventName) > 40){
+//         $errMsgTile[] = "Event Name cannot exceed 40 characters";
+//     }
+    
+//     $pattern = "/^[A-Za-z ]+$/";
+    
+//     if(preg_match($pattern, $eventName) == false){
+//         $errMsgTile[] = "Invalid event name entered.";
+//     }
+    
+//     return $errMsgTile;
+// }
+
+function validateTitle($eventName) {
     $errMsgTile = array();
     
-    if($eventName == "" || $eventName == null){
-        $errMsgTile[] = "Please enter your event name";
-    }
-    
-    if(strlen($eventName) > 40){
-        $errMsgTile[] = "Event Name cannot exceed 40 characters";
-    }
-    
-    $pattern = "/^[A-Za-z ]+$/";
-    
-    if(preg_match($pattern, $eventName) == false){
-        $errMsgTile[] = "Invalid event name entered.";
+    try {
+        if ($eventName == "" || $eventName == null) {
+            throw new Exception("Please enter your event name");
+        }
+        
+        if (strlen($eventName) > 40) {
+            throw new Exception("Event Name cannot exceed 40 characters");
+        }
+        
+        $pattern = "/^[A-Za-z ]+$/";
+        
+        if (preg_match($pattern, $eventName) == false) {
+            throw new Exception("Invalid event name entered.");
+        }
+    } catch (Exception $e) {
+        $errMsgTile[] = $e->getMessage();
     }
     
     return $errMsgTile;
 }
 
+// function validateDescription($description){
+//     $errMsgDiscription = array();
+    
+//     if($description == "" || $description == null){
+//         $errMsgDiscription[] = "Please enter your description";
+//     }
+    
+//     if(strlen($description) > 500){
+//         $errMsgDiscription[] = "Description cannot exceed 500 characters";
+//     }
+    
+//     return $errMsgDiscription;
+// }
+
 function validateDescription($description){
-    $errMsgDiscription = array();
-    
-    if($description == "" || $description == null){
-        $errMsgDiscription[] = "Please enter your description";
+    $errMsgDescription = array();
+
+    try {
+        if ($description == "" || $description == null) {
+            throw new Exception("Please enter your description");
+        }
+
+        if (strlen($description) > 500) {
+            throw new Exception("Description cannot exceed 500 characters");
+        }
+
+    } catch (Exception $e) {
+        $errMsgDescription[] = $e->getMessage();
     }
-    
-    if(strlen($description) > 500){
-        $errMsgDiscription[] = "Description cannot exceed 500 characters";
-    }
-    
-    return $errMsgDiscription;
-}
-function validateStartDate($startDate){
-    $errMsgStartDate = array();
-    
-    if($startDate == "" || $startDate == null){
-        $errMsgStartDate[] = "Please select your event start date";
-    }
-    
-    return $errMsgStartDate;
-}
-function validateSeat($seat){
-    $errMsgSeat = array();
-    
-    if($seat == "" || $seat == null){
-        $errMsgSeat[] = "Please enter your event total seat number";
-    }
-    
-    return $errMsgSeat;
+
+    return $errMsgDescription;
 }
 
+// function validateStartDate($startDate){
+//     $errMsgStartDate = array();
+    
+//     if($startDate == "" || $startDate == null){
+//         $errMsgStartDate[] = "Please select your event start date";
+//     }
+    
+//     return $errMsgStartDate;
+// }
+
+function validateStartDate($startDate){
+    $errMsgStartDate = array();
+
+    try {
+        if ($startDate == "" || $startDate == null) {
+            throw new Exception("Please select your event start date");
+        }
+
+    } catch (Exception $e) {
+        $errMsgStartDate[] = $e->getMessage();
+    }
+
+    return $errMsgStartDate;
+}
+
+// function validateSeat($seat){
+//     $errMsgSeat = array();
+    
+//     if($seat == "" || $seat == null){
+//         $errMsgSeat[] = "Please enter your event total seat number";
+//     }
+    
+//     return $errMsgSeat;
+// }
+
+function validateSeat($seat){
+    $errMsgSeat = array();
+
+    try {
+        if ($seat == "" || $seat == null) {
+            throw new Exception("Please enter your event total seat number");
+        }
+
+        if (!is_numeric($seat) || intval($seat) <= 0) {
+            throw new Exception("Please enter a valid positive number for the seat count");
+        }
+
+    } catch (Exception $e) {
+        $errMsgSeat[] = $e->getMessage();
+    }
+
+    return $errMsgSeat;
+}
 //Schedule part 
-function validateScheduleId($id){
+function validateScheduleId($schedule_id){
     $errMsgSeheduleId = array();
     
     $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     
-    $selectCommand = "SELECT * FROM schedule WHERE id = '$id'";
+    $selectCommand = "SELECT * FROM schedule WHERE schedule_id = '$schedule_id'";
     
     $result = mysqli_query($conn, $selectCommand);
     
     if($result->num_rows > 0){
-        $errMsgSeheduleId[] = "Schedule ID " . $id . " already exists";
+        $errMsgSeheduleId[] = "Schedule ID " . $schedule_id . " already exists";
     }
     return $errMsgSeheduleId;
 }
@@ -97,54 +175,64 @@ function validateScheduleEventId($eventId){
     return $errMsgScheduleEventId;
 }
 
+// function validateDate($date){
+//     $errMsgDate = array();
+    
+//     if($date == "" || $date == null){
+//         $errMsgDate[] = "Please select your event schedule date";
+//     }
+    
+//     return $errMsgDate;
+// }
+
 function validateDate($date){
     $errMsgDate = array();
-    
-    if($date == "" || $date == null){
-        $errMsgDate[] = "Please select your event schedule date";
+
+    try {
+        if ($date == "" || $date == null) {
+            throw new Exception("Please select your event schedule date");
+        }
+
+        $d = DateTime::createFromFormat('Y-m-d', $date);
+        if (!$d || $d->format('Y-m-d') !== $date) {
+            throw new Exception("Please enter a valid date in the format YYYY-MM-DD");
+        }
+
+    } catch (Exception $e) {
+        $errMsgDate[] = $e->getMessage();
     }
-    
+
     return $errMsgDate;
 }
 
+// function validateTime($time){
+//     $errMsgTime = array();
+    
+//     if($time == "" || $time == null){
+//         $errMsgTime[] = "Please select your event schedule time";
+//     }
+    
+//     return $errMsgTime;
+// }
+
 function validateTime($time){
     $errMsgTime = array();
-    
-    if($time == "" || $time == null){
-        $errMsgTime[] = "Please select your event schedule time";
+
+    try {
+        if ($time == "" || $time == null) {
+            throw new Exception("Please select your event schedule time");
+        }
+
+        $t = DateTime::createFromFormat('H:i', $time);
+        if (!$t || $t->format('H:i') !== $time) {
+            throw new Exception("Please enter a valid time in the format HH:MM");
+        }
+
+    } catch (Exception $e) {
+        $errMsgTime[] = $e->getMessage();
     }
-    
+
     return $errMsgTime;
-}
-
-function validateGPT($goldprice){
-    $errMsgGPT = array();
-    
-    if($goldprice == "" || $goldprice == null){
-        $errMsgGPT[] = "Please select your event gold ticket prcice date";
-    }
-    
-    return $errMsgGPT;
-}
-
-function validateSPT($silverprice){
-    $errMsgSPT = array();
-    
-    if($silverprice == "" || $silverprice == null){
-        $errMsgSPT[] = "Please select your event silver ticket prcice date";
-    }
-    
-    return $errMsgSPT;
-}
-
-function validateMPT($bronzeprice){
-    $errMsgMPT = array();
-    
-    if($bronzeprice == "" || $bronzeprice == null){
-        $errMsgMPT[] = "Please select your event bronze ticket price date";
-    }
-    
-    return $errMsgMPT;
 }
 
 function uploadFile($file)
@@ -174,4 +262,25 @@ function getImage($id, $conn)
     $row = $conn->query("SELECT image FROM admin WHERE id = '$id'")->fetch_assoc();
     if (strlen($row['image']) < 10) return "images/trainlg.png";
     else return "upload/" . $row['image'];
+}
+
+function createEventFolder($eventId, $basePath, $files) {
+    $folderPath = $basePath . '/' . $eventId;
+
+    if (!file_exists($folderPath)) {
+        mkdir($folderPath, 0777, true);
+    }
+
+    $uploadedFiles = [];
+
+    foreach ($files['name'] as $key => $name) {
+        $targetFilePath = $folderPath . '/' . basename($name);
+
+        if (move_uploaded_file($files['tmp_name'][$key], $targetFilePath)) {
+            $uploadedFiles[] = $targetFilePath;
+        } else {
+            return false;
+        }
+    }
+    return $uploadedFiles;
 }

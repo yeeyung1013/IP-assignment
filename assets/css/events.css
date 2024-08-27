@@ -67,8 +67,8 @@ class of events */
     background: #fff;
     box-sizing: border-box;
     width: 70%;
-    height: 100%;
-    height:fit-content;
+    /* height: 100%;
+    height:fit-content; */
     float: left;
 }
 

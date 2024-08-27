@@ -1,34 +1,35 @@
 <?php
  $pageTitle = "Edit Events";
 
-// Moved header code to header.php
-// If any changes required in the future, only need to make it in one file.
 include './includes/dbConnector.php';
 include './includes/helpers.php';
+include './class/event';
 
-if(isset($_GET['id'])){
+$dbConnection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+
+if ($dbConnection->connect_error) {
+    die("Connection failed: " . $dbConnection->connect_error);
+}
+
+$event = new Event($dbConnection);
+
+if (isset($_GET['id'])) {
     $eventId = trim($_GET['id']);
     
-    $dbConnection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-    
-    $selectCommand = "SELECT * FROM villain WHERE EventID = '$eventId'";
-    
-    $result = mysqli_query($dbConnection, $selectCommand);
-    
-    
-    if ($result->num_rows==1){
-        $villain = mysqli_fetch_object($result);
-        
-        //var_dump($student);
-        
+    $villain = $event->getEventById($eventId);
+
+    if ($villain) {
         $eventId = $villain->EventID;
         $eventName = $villain->EventName;
         $description = $villain->Description;
         $startDate = $villain->StartDate;
         $seat = $villain->Seat;
+    } else {
+        echo "<div class='question'>Event not found.</div>";
     }
 }
-if (isset($_POST['btnSubmit'])){
+
+if (isset($_POST['btnSubmit'])) {
     $eventName = isset($_POST['eventName']) ? trim($_POST['eventName']) : "";
     $description = isset($_POST['description']) ? trim($_POST['description']) : "";
     $startDate = isset($_POST['startDate']) ? trim($_POST['startDate']) : "";
@@ -39,305 +40,211 @@ if (isset($_POST['btnSubmit'])){
     $errMsgStartDate = validateStartDate($startDate);
     $errMsgSeat = validateSeat($seat);
     
-//    $finalErrorMessages = array_merge(array_merge($errMsgName, $errMsgDescription), $errMsgStartDate);
-    $finalErrorMessage = array_merge($errMsgSeat,array_merge($errMsgStartDate, array_merge($errMsgDescription, array_merge($errMsgName))));
-    
-    if (count($finalErrorMessages) > 0){
+    $finalErrorMessage = array_merge($errMsgSeat, array_merge($errMsgStartDate, array_merge($errMsgDescription, $errMsgName)));
+
+    if (count($finalErrorMessage) > 0){ 
         echo "<div class='error'>";
         echo "<ul>";
-        foreach ($finalErrorMessages as $message) {
+        foreach ($finalErrorMessage as $message) {
             echo "<li>$message</li>";
         }
         echo "</ul>";
         echo "</div>";
-    }
-        else{
-        $updateCommand = "UPDATE villain SET EventName='$eventName',Description='$description',StartDate='$startDate',Seat='$seat' WHERE EventID = '$eventId'";
+    } else {
+        $event->setEvent($eventId, $eventName, $description, $startDate, $seat);
         
-        $result = mysqli_query($dbConnection, $updateCommand);
-        
-        echo "<div class='question'>";
-        echo "Events has been update successfully. [<a href='Events.php'>Event List</a>]";
-        echo "</div>";
+        if ($event->updateEvent()) {
+            echo "<script type='text/javascript'>
+             alert('Events has been updated successfully. ');
+             window.location.href = 'Events.php';
+            </script>";
+        } else {
+            echo "<script>alert('Failed to update the event.');</script>";
+        }
     }
 }
 
+$dbConnection->close();
 ?>
+
 <head lang="en">
    <meta charset="utf-8" />
    <meta name="viewport" content="width=device-width, initial-scale=1" />
-   <title>Gaming X Society Edit Events Form</title>
+   <title>Edit Events Form</title>
+   <link rel="stylesheet" href="../assets/css/admin/bootstrap.min.css">
 </head>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
-
-*
-{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
-body{
-    margin:0;
-    padding:0;
-    background-color: #1c1c1c;
-}
-.block{
-    position: relative;
-    margin:5% auto 0;
-    width: 70%;
-    height: 400px auto;
-    background: linear-gradient(0deg, black, rgb(44,43,43));
-    padding: 50px 40px;
-    display: flex;
-    flex-direction: column;
-}
-
-.block::before, .block::after
-{
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    width: calc(100% + 5px);
-    height: calc(100% + 5px);
-    background: linear-gradient(45deg, #e6fb04, #ff6600, #00ff66, #00ffff,
-    #ff00ff, #ff0099, #6e0dd0, #ff3300, #099fff);
-    background-size: 200%;
-    animation: animate 20s linear infinite;
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #686868;
+  line-height: 1.9;
+  color: #8c8c8c;
+  position: relative; }
+  body:before {
     z-index: -1;
-}
-
-h2{
-    color: #45f3ff;
-    font-weight: 800;
-    font-size: 35px;
-    text-align: center;
-    letter-spacing: 0.1em;
-}
-
-.inputBox{
-    position: relative;
-    width: 300px;
-    margin-top: 50px;
-}
-
-.inputBox input{
-    position: relative;
-    width: 500px;
-    padding: 20px 10px 10px;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #23242a;
-    font-size: 1em;
-    letter-spacing: 0.05em;
-    z-index: 10;
-    margin-top: 20px;
-    color: black;
-}
-
-.inputBox h1{
     position: absolute;
+    height: 50vh;
+    content: "";
+    top: 0;
     left: 0;
-    padding: 3px 3px 3px;
-    font-size: 1em;
-    color: #FFFFFF; 
-    pointer-events: none;
-    letter-spacing: 0.05em;
-    transition: 0.5s;
-}
+    right: 0;
+    background: #F0F0F0; }
 
-.inputBox input:valid ~ h1,
-.inputBox input:focus ~ h1
-{
-    color: #45f3ff;
-    transform: translateY(-34px);
-    font-size: 0.75em;
-}
-
-.inputBox i{
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 400px;
-    height: 2px;
-    background: #45f3ff;
-    border-radius: 4px;
-    transition: 0.5s;
-    pointer-events: none;
-    z-index:9;
-}
-
-.inputBox input:valid ~i,
-.inputBox input:focus ~i
-{
-   color: #45f3ff;
-   height: 40px;
-}
-
-.box{
-    position: relative;
-    width: 300px;
-    margin-top: 50px;
-}
-
-.box input{
-    position: relative;
-    width: 100%;
-    padding: 20px 10px 10px;
-    background: #45f3ff;
+    textarea.form-control {
+    min-height: 100px;
+    padding: 10px;
+    width: 1050px;
+    font-size: 16px;
+    line-height: 1.5;
+    resize: none; 
     border: none;
+    border-bottom: 1px solid #ccc;
+    padding-left: 0;
+    padding-right: 0;
+    border-radius: 0;
+    background: #f2f2f2;
+}
+
+a {
+  text-decoration: none;
+  display: inline-block;
+  padding: 5px 20px;
+}
+
+a:hover {
+  background-color: #ddd;
+  color: black;
+  text-decoration: none;
+}
+
+.previous {
+  background-color: #F0F0F0;
+  color: black;
+}
+
+.text-black {
+  color: #000; }
+
+.content {
+  padding: 7rem 0; }
+
+.heading {
+  font-size: 2.5rem;
+  font-weight: 900; }
+
+.form-control {
+  border: none;
+  border-bottom: 1px solid #ccc;
+  padding-left: 0;
+  padding-right: 0;
+  border-radius: 0;
+  background: #f2f2f2; }
+
+  .form-control:active, .form-control:focus {
     outline: none;
-    color: #23242a;
-    font-size: 1em;
-    letter-spacing: 0.05em;
-    z-index: 10;
-    margin-top: 35px;
-    color: black;
-}
-.box textarea{
-    position: relative;
-    width: 500px;
-    padding: 20px 10px 10px;
-    background: #45f3ff;
-    border: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-color: #000; 
+    background: #f2f2f2;}
+
+.col-form-label {
+  color: #000;
+  font-size: 13px; }
+
+.btn, .custom-select {
+  height: 45px; }
+
+.btn {
+  border: none;
+  border-radius: 0;
+  font-size: 12px;
+  letter-spacing: .2rem;
+  text-transform: uppercase; }
+  .btn.btn-primary {
+    background: #35477d;
+    color: #fff;
+    padding: 15px 20px; }
+  .btn:hover {
+    color: #fff; }
+  .btn:active, .btn:focus {
     outline: none;
-    color: #23242a;
-    font-size: 1em;
-    letter-spacing: 0.05em;
-    z-index: 10;
-    margin-top: 35px;
-    color: black;
-}
+    -webkit-box-shadow: none;
+    box-shadow: none; }
 
-.box h1{
-    position: absolute;
-    left: 0;
-    padding: 3px 3px 3px;
-    font-size: 1em;
-    color: #FFFFFF; 
-    pointer-events: none;
-    letter-spacing: 0.05em;
-    transition: 0.5s;
-
-}
-
-.box input:valid ~ h1,
-.box input:focus ~ h1
-{
-    color: #45f3ff;
-    transform: translateY(-34px);
-    font-size: 0.75em;
-}
-
-.box textarea:valid ~ h1,
-.box textarea:focus ~ h1
-{
-    color: #45f3ff;
-    transform: translateY(-34px);
-    font-size: 0.75em;
-}
-
-.box p{
-    position: relative;
-    width: 500px;
-    padding: 20px 10px 10px;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #23242a;
-    font-size: 1em;
-    letter-spacing: 0.05em;
-    z-index: 10;
-    margin-top: 20px;
-    color: black;
-    background-color: #45f3ff;
-}
-
-input[type="submit"]{
-    border: none;
-    outline: no;
-    background: #45f3ff;
-    padding: 11px 25px;
-    width:300px;
-    margin-top: 30px;
-    border-radius: 4px;
-    font-weight: 600;
-    margin-left: 30px;
-}
-
-input[type="reset"]{
-    border: none;
-    outline: no;
-    background: #45f3ff;
-    padding: 11px 25px;
-    width:300px;
-    margin-top: 10px;
-    border-radius: 4px;
-    font-weight: 600;
-    margin-left: 30px;
-}
-
-@keyframes animate{
-    0%{
-       background-position: 0 0; 
-    }
-    50%{
-       background-position: 400% 0; 
-    }
-    100%{
-       background-position: 0 0; 
-    } 
-}
+    .contact-wrap {
+  -webkit-box-shadow: 0 0px 20px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0px 20px 0 rgba(0, 0, 0, 0.2); }
+  .contact-wrap .col-form-label {
+    font-size: 14px;
+    color: #686868;
+    margin: 0 0 10px 0;
+    display: inline-block;
+    padding: 0; }
+  .contact-wrap .form, .contact-wrap .contact-info {
+    padding: 40px; }
+  .contact-wrap .contact-info {
+    color: rgba(255, 255, 255, 0.5); }
+  .contact-wrap .form {
+    background: #fff; }
+    .contact-wrap .form h3 {
+      color: #35477d;
+      font-size: 20px;
+      margin-bottom: 30px; }
 </style>
-<ul>
-  <li>
-  <a href="Events.php">Go Back</a>
-  </li>
-</ul>
+  <a href="Events.php" class="previous">&laquo; Go Back</a>
 <body>
-     <div class="block">
-     <h2>EDIT EVENT</h2>
-<form method="POST" action="">
-    <div class="box">
-    <h1>Events ID:</h1>
-    </br>
-            <p><?php global $eventId; echo $eventId;?></p>
-    </div>
-    
-    <div class ="box">
-    <h1>Event Name:</h1>
-            <input name="eventName" id="eventNameBox" type="text" maxlength="40" placeholder="Events Name" required 
+     <div class="content">
+     <div class="container">
+    <div class="row align-items-stretch no-gutters contact-wrap">
+        <div class="form h-100">
+          <h3>Edits events information</h3>
+    <form method="POST" class="mb-5">
+    <div class="row">
+        <div class="col-md-6 form-group mb-5">
+            <label for="box" class="col-form-label">Events ID</label>
+            <p class="form-control"><?php global $eventId; echo $eventId;?></p>
+        </div>
+
+    <div class="col-md-6 form-group mb-5">
+            <label for="seatNumBox" class="col-form-label">Events Name</label>
+            <input class="form-control" name="eventName" id="eventNameBox" type="text" maxlength="40" placeholder="Events Name" required 
                    value="<?php global $eventName; echo $eventName;?>"/>
-            <i></i>
-    </div>
-    
-     <div class ="box">
-    <h1>Seat Number:</h1>
-            <input name="seat" id="seatBox" type="text" maxlength="10" placeholder="" required 
+        </div>
+
+    <div class="col-md-6 form-group mb-5">
+            <label for="seatBox" class="col-form-label">Seat Number</label>
+            <input class="form-control" name="seat" id="seatBox" type="text" maxlength="10" placeholder="" required 
                    value="<?php global $seat; echo $seat;?>"/>
-             <i></i>
-    </div> 
-    
-    <div class="box">
-    <h1>Description:</h1>
-<textarea name="description" id="descriptionBox" maxlength="500" placeholder="Description" required="true" 
+        </div>
+
+    <div class="col-md-6 form-group mb-5">
+            <label for="dateBox" class="col-form-label">Start Date</label>
+            <input class="form-control" type="date" name="startDate"  id="dateBox" required="true" 
+       value="<?php global $startDate; echo $startDate;?>"/>
+        </div>
+
+    <div class="row">
+        <div class="col-md-12 form-group mb-5">
+            <label for="descriptionBox" class="col-form-label">Description</label>
+            <textarea class="form-control" name="description" id="descriptionBox" maxlength="500" required="true" 
                       value="<?php global $description; echo $description;?>">
 </textarea>
+        </div>
     </div>
-    
-     <div class="box">
-     <h1>Start Date:</h1>
-     <input type="date" name="startDate"  id="dateBox" required="true" 
-       value="<?php global $startDate; echo $startDate;?>"/>
-      </div> 
-    
-    <input type="submit" name="btnSubmit" value="Update"/>
-    <input type="reset" name="btnCancel" value="Cancel"
-           onclick="location='Events.php'"/>
+    <div class="col-md-12 text-center form-group">
+        <input type="submit" name="btnSubmit" value="Update" class="btn btn-primary rounded-0 py-2 px-4" style="background-color: green; color: white;" />
+        <input type="reset" name="btnCancel" value="Cancel" onclick="location='Events.php'" class="btn btn-primary rounded-0 py-2 px-4" style="background-color: red; color: white;" />
+    </div>
 </form>
      </div>
 </body>
+<script>
+      $(document).ready(function () {
+        $("#descriptionBox").on("input", function () {
+          this.style.height = "auto";
+          this.style.height = this.scrollHeight + 10 + "px";
+        });
+      });
+    </script>
+
 
