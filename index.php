@@ -120,7 +120,7 @@
               <li>
                 <a href="#" class="speaker-member">
                   <figure>
-                    <img src="./assets/images/event3/speaker-member-1.png" alt="Speaker image">
+                    <img src="./assets/images/speaker-member-1.png" alt="Speaker image">
                   </figure>
 
                   <ion-icon name="link-outline"></ion-icon>
@@ -130,7 +130,7 @@
               <li>
                 <a href="#" class="speaker-member">
                   <figure>
-                    <img src="./assets/images/event3/speaker-member-2.png" alt="Speaker image">
+                    <img src="./assets/images/speaker-member-2.png" alt="Speaker image">
                   </figure>
 
                   <ion-icon name="link-outline"></ion-icon>
@@ -140,7 +140,7 @@
               <li>
                 <a href="#" class="speaker-member">
                   <figure>
-                    <img src="./assets/images/event3/speaker-member-3.png" alt="Speaker image">
+                    <img src="./assets/images/speaker-member-3.png" alt="Speaker image">
                   </figure>
 
                   <ion-icon name="link-outline"></ion-icon>
