@@ -1,5 +1,5 @@
 # Important
-- To view the website successfully, please do not RENAME the folder name, leave it by default, "villian".
+- To view the website successfully, please do not RENAME the folder name, leave it by default, "villain".
 
 # Steps to unzip and view the website through XAMPP
 1. Unzip the amit2043.zip
