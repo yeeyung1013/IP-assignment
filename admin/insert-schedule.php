@@ -3,7 +3,7 @@
 $pageTitle = "Insert Schedule";
 include './includes/dbConnector.php';
 include './includes/helpers.php';
-include './class/schedule'; 
+include './class/schedule.php'; 
 
 if(isset($_GET['id'])){
    $eventId = trim($_GET['id']);

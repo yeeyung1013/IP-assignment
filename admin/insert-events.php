@@ -3,59 +3,68 @@
 $pageTitle = "Insert Events";
 include './includes/dbConnector.php'; 
 include './includes/helpers.php';
-include './class/event'; 
+include './class/event.php'; 
+include './class/notificationStrategies.php'; 
 
 if (isset($_POST['btnSubmit'])){
-    $eventId = isset($_POST['eventId']) ? trim($_POST['eventId']) : "";
-    $eventName = isset($_POST['eventName']) ? trim($_POST['eventName']) : "";
-    $description = isset($_POST['description']) ? trim($_POST['description']) : "";
-    $startDate = isset($_POST['startDate']) ? trim($_POST['startDate']) : "";
-    $seat = isset($_POST['seat']) ? trim($_POST['seat']) : "";
+  $eventId = isset($_POST['eventId']) ? trim($_POST['eventId']) : "";
+  $eventName = isset($_POST['eventName']) ? trim($_POST['eventName']) : "";
+  $description = isset($_POST['description']) ? trim($_POST['description']) : "";
+  $startDate = isset($_POST['startDate']) ? trim($_POST['startDate']) : "";
+  $seat = isset($_POST['seat']) ? trim($_POST['seat']) : "";
+  $notificationType = isset($_POST['notificationType']) ? $_POST['notificationType'] : "email"; 
 
-    $errMsgId = validateId($eventId);
-    $errMsgName = validateTitle($eventName);
-    $errMsgDescription = validateDescription($description);
-    $errMsgStartDate = validateStartDate($startDate);
-    $errMsgSeat = validateSeat($seat);
+  $errMsgId = validateId($eventId);
+  $errMsgName = validateTitle($eventName);
+  $errMsgDescription = validateDescription($description);
+  $errMsgStartDate = validateStartDate($startDate);
+  $errMsgSeat = validateSeat($seat);
 
-    $finalErrorMessage = array_merge(
-        $errMsgSeat,
-        array_merge(
-            $errMsgStartDate,
-            array_merge(
-                $errMsgDescription,
-                array_merge($errMsgId, $errMsgName)
-            )
-        )
-    );
+  $finalErrorMessage = array_merge($errMsgSeat,array_merge($errMsgStartDate,array_merge($errMsgDescription,array_merge($errMsgId, $errMsgName))
+      )
+  );
 
-    if (count($finalErrorMessage) > 0) {
-        echo "<ul>";
-        foreach ($finalErrorMessage as $message) {
-            echo "<li>$message</li>";
-        }
-        echo "</ul>";
-    } else {
-        $dbConnection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME); 
-        $event = new Event($dbConnection);
+  if (count($finalErrorMessage) > 0) {
+      echo "<ul>";
+      foreach ($finalErrorMessage as $message) {
+          echo "<li>$message</li>";
+      }
+      echo "</ul>";
+  } else {
+      $dbConnection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME); 
 
-        $event->setEvent($eventId, $eventName, $description, $startDate, $seat);
+      switch ($notificationType) {
+          case 'sms':
+              $strategy = new SMSNotification($dbConnection);
+              break;
+          default:
+              $strategy = new EmailNotification($dbConnection);
+              break;
+      }
 
-        if ($event->createEvent()) {
-            $eventId = $event->getLastInsertId(); 
-            $basePath = '../assets/images/event';
-            $files = $_FILES['files'];
+      $event = new Event($dbConnection, $strategy);
 
-            $eventFolder = createEventFolder($eventId, $basePath, $files);
+      $event->setEvent($eventId, $eventName, $description, $startDate, $seat);
 
-            echo "<script>
-                alert('New Events has been inserted successfully.\\n\\nClick OK to go to the Event List.');
-                window.location.href = 'Events.php';
-            </script>";
-        } else {
-            echo "<script>alert('Failed to insert new event.');</script>";
-        }
-    }
+      if ($event->createEvent()) {
+          $eventId = $event->getLastInsertId(); 
+          $basePath = '../assets/images/event';
+          $files = $_FILES['files'];
+
+          $eventFolder = createEventFolder($eventId, $basePath, $files);
+
+          $eventMessage = "A new event has been created: " . $eventName;
+
+          $strategy->sendNotification($eventMessage);
+
+          echo "<script>
+              alert('New Event has been inserted successfully.\\n\\nClick OK to go to the Event List.');
+              window.location.href = 'Events.php';
+          </script>";
+      } else {
+          echo "<script>alert('Failed to insert new event.');</script>";
+      }
+  }
 }
 ?>
 <head lang="en">
@@ -197,55 +206,60 @@ a:hover {
 <a href="Events.php" class="previous">&laquo; Go Back</a>
 <body>
 <div class="content">
-  
   <div class="container">
     <div class="row align-items-stretch no-gutters contact-wrap">
       <div class="col-md-8">
         <div class="form h-100">
           <h3>Create new events</h3>
           <form class="mb-5" method="post" enctype="multipart/form-data">
-    <div class="row">
-        <div class="col-md-6 form-group mb-5">
-            <label for="eventNameBox" class="col-form-label">Events Name</label>
-            <input class="form-control" name="eventName" id="eventNameBox" type="text" maxlength="40" required/>
-        </div>
-        <div class="col-md-6 form-group mb-5">
-            <label for="seatNumBox" class="col-form-label">Seat Number</label>
-            <input class="form-control" name="seat" id="seatNumBox" type="number" maxlength="11" required/>
-        </div>
-        <div class="col-md-6 form-group mb-5">
-            <label for="dateBox" class="col-form-label">Start Date</label>
-            <input class="form-control" type="date" name="startDate" id="dateBox" required="true"/>
-        </div>
-        <div class="col-md-6 form-group mb-5">
-            <label for="imageBox" class="col-form-label">Events Picture</label>
-            <input class="form-control" id="imageBox" type="file" name="files[]" multiple required>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12 form-group mb-5">
-            <label for="descriptionBox" class="col-form-label">Description</label>
-            <textarea class="form-control" name="description" id="descriptionBox" maxlength="500" required="true"></textarea>
-        </div>
-    </div>
-    <div class="col-md-12 text-center form-group">
-        <input type="submit" name="btnSubmit" value="Insert" class="btn btn-primary rounded-0 py-2 px-4" style="background-color: green; color: white;" />
-        <input type="reset" name="btnCancel" value="Cancel" onclick="location='Events.php'" class="btn btn-primary rounded-0 py-2 px-4" style="background-color: red; color: white;" />
-    </div>
-</form>
-
+            <div class="row">
+                <div class="col-md-6 form-group mb-5">
+                    <label for="eventNameBox" class="col-form-label">Events Name</label>
+                    <input class="form-control" name="eventName" id="eventNameBox" type="text" maxlength="40" required/>
+                </div>
+                <div class="col-md-6 form-group mb-5">
+                    <label for="seatNumBox" class="col-form-label">Seat Number</label>
+                    <input class="form-control" name="seat" id="seatNumBox" type="number" maxlength="11" required/>
+                </div>
+                <div class="col-md-6 form-group mb-5">
+                    <label for="dateBox" class="col-form-label">Start Date</label>
+                    <input class="form-control" type="date" name="startDate" id="dateBox" required/>
+                </div>
+                <div class="col-md-6 form-group mb-5">
+                    <label for="imageBox" class="col-form-label">Events Picture</label>
+                    <input class="form-control" id="imageBox" type="file" name="files[]" multiple required>
+                </div>
+                <div class="col-md-6 form-group mb-5">
+                    <label for="notificationType" class="col-form-label">Notification Type</label>
+                    <select class="custom-select" name="notificationType" id="notificationType">
+                        <option value="email">Email</option>
+                        <option value="sms">SMS</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 form-group mb-5">
+                    <label for="descriptionBox" class="col-form-label">Description</label>
+                    <textarea class="form-control" name="description" id="descriptionBox" maxlength="500" required></textarea>
+                </div>
+            </div>
+            <div class="col-md-12 text-center form-group">
+                <input type="submit" name="btnSubmit" value="Insert" class="btn btn-primary rounded-0 py-2 px-4" style="background-color: green; color: white;" />
+                <input type="reset" name="btnCancel" value="Cancel" onclick="location='Events.php'" class="btn btn-primary rounded-0 py-2 px-4" style="background-color: red; color: white;" />
+            </div>
+        </form>
         </div>
       </div>
       <div class="col-md-4">
         <div class="contact-info h-100">
           <h3>Insert Events Information</h3>
-          <p class="mb-5">If you got any problem in create the information Please follow this rule.</p>
+          <p class="mb-5">If you got any problem in creating the information, please follow these rules.</p>
           <ul class="list-unstyled">
             <li class="d-flex">
               <span class="wrap-icon icon-room mr-3"></span>
-              <span class="text"> 1.)The Events ID cant more than 11 number<br/>
-         2.)The Events Name cant more than 40 character<br/>
-         3.)The Description cant enter more than 500 character include the special character such as @<br/></span>
+              <span class="text"> 1.) The Event ID can't be more than 11 digits<br/>
+                 2.) The Event Name can't be more than 40 characters<br/>
+                 3.) The Description can't be more than 500 characters, including special characters like @<br/></span>
             </li>
           </ul>
         </div>
@@ -255,11 +269,10 @@ a:hover {
 </div>
 </body>
 <script>
-      $(document).ready(function () {
-        $("#descriptionBox").on("input", function () {
-          this.style.height = "auto";
-          this.style.height = this.scrollHeight + 10 + "px";
-        });
-      });
-    </script>
-    
+$(document).ready(function () {
+    $("#descriptionBox").on("input", function () {
+        this.style.height = "auto";
+        this.style.height = this.scrollHeight + 10 + "px";
+    });
+});
+</script>

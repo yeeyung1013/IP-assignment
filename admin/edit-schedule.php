@@ -3,7 +3,7 @@
 
 include './includes/dbConnector.php';
 include './includes/helpers.php';
-include './class/schedule'; 
+include './class/schedule.php'; 
 
 if(isset($_GET['id'])){
     $schedule_id = trim($_GET['id']);

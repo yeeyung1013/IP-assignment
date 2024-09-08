@@ -11,8 +11,8 @@ if(isset($_GET['page1']))
 $page=1;
  }
  
- $num_per_page=05;
- $start_from=($page-1)*05;
+ $num_per_page=04;
+ $start_from=($page-1)*04;
 
 $dbConnection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 

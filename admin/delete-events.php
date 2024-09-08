@@ -6,7 +6,7 @@ $pageTitle = "Delete event";
 
 include './includes/dbConnector.php';
 include './includes/helpers.php';
-include './class/event';
+include './class/event.php';
 
 $dbConnection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 

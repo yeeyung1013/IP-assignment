@@ -6,11 +6,9 @@ if(isset($_POST["login-btn"])){
     $email = trim($_POST['umail'], " ");
     $pass = trim($_POST['psw'], " ");
     
-    // Prepare a select statement
     $q = "SELECT COUNT('email') FROM customer WHERE email = '$email' AND pass = '$pass'";
-    $r = mysqli_query ($dbc, $q); // Run the query.
+    $r = mysqli_query ($dbc, $q);
     if(mysqli_fetch_row($r)[0] == 1){
-        // Start the session
         session_start();
         $_SESSION["email"] = $email;
         $_SESSION["pass"] = $pass;
@@ -18,31 +16,48 @@ if(isset($_POST["login-btn"])){
     }else{
         echo "<script>alert('Invalid email/password!')</script>";
     }
-    $_POST = array();// Clear $_POST
+    $_POST = array();
     echo "<script>document.location = '".$_SERVER['HTTP_REFERER']."'</script>";
-    // Close connection
     mysqli_close($dbc);
 }
 
-if(isset($_POST["signup-btn"])){
-    $email = trim($_POST['email'], " ");
-    $pass = trim($_POST['psw'], " ");
-    
-    $chkEmailQ = "SELECT COUNT('email') FROM customer WHERE email = '$email'";
-    $r = mysqli_query ($dbc, $chkEmailQ);
-    echo "<script>alert('$chkEmailQ');</script>";
-    if(mysqli_fetch_row($r)[0] == 1){
-        echo "<script>alert('Email taken, please login!')</script>";
-    }else{
-        $q = "INSERT INTO customer (email, pass) VALUES ('$email', '$pass');";
-        $r = mysqli_query ($dbc, $q);
-        echo "<script>alert('Sign up Success!')</script>";	
+if (isset($_POST["signup-btn"])) {
+
+    $email = trim($_POST['email'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+    $password = trim($_POST['password'] ?? '');
+    $cpassword = trim($_POST['cpassword'] ?? '');
+
+    if ($password !== $cpassword) {
+        echo "<script>alert('Passwords do not match!');</script>";
+    } else {
+        $stmt = $dbc->prepare("SELECT COUNT(email) FROM customer WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        $stmt->close();
+
+        if ($count > 0) {
+            echo "<script>alert('Email taken, please login!');</script>";
+        } else {
+            $stmt = $dbc->prepare("INSERT INTO customer (email,phone,pass) VALUES (?,?,?)");
+            $stmt->bind_param("sss", $email,$phone,$password);
+
+            if ($stmt->execute()) {
+                echo "<script>alert('Sign up Success!');</script>";
+            } else {
+                echo "<script>alert('Sign up failed. Please try again.');</script>";
+            }
+            $stmt->close();
+        }
     }
-    $_POST = array();// Clear $_POST
-    echo "<script>document.location = '".$_SERVER['HTTP_REFERER']."'</script>";
-    // Close connection
-    mysqli_close($dbc);
+
+    echo "<script>window.location.href = '../';</script>";
+
+    $dbc->close();
 }
+
 
 if(isset($_POST['passreset-btn'])){
     $email = trim($_POST['umail'], " ");

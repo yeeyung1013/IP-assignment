@@ -5,7 +5,7 @@ $pageTitle = "Delete schedule";
 
 include './includes/dbConnector.php';
 include './includes/helpers.php';
-include './class/schedule';
+include './class/schedule.php';
 
 $dbConnection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
