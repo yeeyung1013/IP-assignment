@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<paymentReport>
+  <reportDate>2024-09-20</reportDate>
+  <totalTransactions>4</totalTransactions>
+  <totalAmount currency="MYR">2000</totalAmount>
+  <payment>
+    <paymentID>25</paymentID>
+    <paymentDate>2024-09-17</paymentDate>
+    <custDetails>
+      <custID>10001</custID>
+      <email/>
+    </custDetails>
+    <paymentDetails>
+      <paymentMethod>PayPal</paymentMethod>
+      <amount>200</amount>
+      <quantity>1</quantity>
+    </paymentDetails>
+  </payment>
+  <payment>
+    <paymentID>26</paymentID>
+    <paymentDate>2024-09-17</paymentDate>
+    <custDetails>
+      <custID>10001</custID>
+      <email/>
+    </custDetails>
+    <paymentDetails>
+      <paymentMethod>PayPal</paymentMethod>
+      <amount>200</amount>
+      <quantity>1</quantity>
+    </paymentDetails>
+  </payment>
+  <payment>
+    <paymentID>27</paymentID>
+    <paymentDate>2024-09-17</paymentDate>
+    <custDetails>
+      <custID>10001</custID>
+      <email/>
+    </custDetails>
+    <paymentDetails>
+      <paymentMethod>Credit Card</paymentMethod>
+      <amount>1100</amount>
+      <quantity>6</quantity>
+    </paymentDetails>
+  </payment>
+  <payment>
+    <paymentID>28</paymentID>
+    <paymentDate>2024-09-17</paymentDate>
+    <custDetails>
+      <custID>10001</custID>
+      <email/>
+    </custDetails>
+    <paymentDetails>
+      <paymentMethod>PayPal</paymentMethod>
+      <amount>500</amount>
+      <quantity>3</quantity>
+    </paymentDetails>
+  </payment>
+</paymentReport>

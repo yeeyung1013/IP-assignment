@@ -1,0 +1,8 @@
+<!ELEMENT Events (Event+)>
+<!ELEMENT Event (EventID, EventName, Description, Location, StartDate, Seat)>
+<!ELEMENT EventID (#PCDATA)>
+<!ELEMENT EventName (#PCDATA)>
+<!ELEMENT Description (#PCDATA)>
+<!ELEMENT Location (#PCDATA)>
+<!ELEMENT StartDate (#PCDATA)>
+<!ELEMENT Seat (#PCDATA)>

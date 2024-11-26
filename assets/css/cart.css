@@ -1,130 +1,399 @@
 body {
-  font-family: Arial;
-  font-size: 17px;
-  padding: 8px;
-  background-color: hsl(231, 12%, 12%);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-.cart-row {
-  display: -ms-flexbox; /* IE10 */
   display: flex;
-  -ms-flex-wrap: wrap; /* IE10 */
+  align-items: center;
+  justify-content: center;
+  background-color: hsl(231, 12%, 12%);
+  font-family: Arial;
+}
+
+.payment-form {
+  margin-top: 125px;
+  margin-left: 40px;
+  margin-right: 40px;
+  display: flex;
   flex-wrap: wrap;
-  margin: 0 -16px;
-}
-
-.cart-col-25 {
-  -ms-flex: 25%; /* IE10 */
-  flex: 25%;
-}
-
-.cart-col-50 {
-  -ms-flex: 50%; /* IE10 */
-  flex: 50%;
-}
-
-.cart-col-75 {
-  -ms-flex: 75%; /* IE10 */
-  flex: 75%;
-}
-
-.cart-adjust{
-    margin-top: 130px;
-    margin-left: 40px;
-    margin-right: 40px;
-}
-
-.cart-col-25,
-.cart-col-50,
-.cart-col-75 {
-  padding: 0 16px;
-}
-
-.cart-container {
-  background-color: #f2f2f2;
-  padding: 5px 20px 15px 20px;
-  border: 1px solid lightgrey;
-  border-radius: 3px;
-}
-
-input[type=text] {
+  justify-content: space-between;
   width: 100%;
-  margin-bottom: 20px;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
+  max-width: 1200px;
 }
 
-.cart-label {
+.payment-container {
+  margin-top: 20px;
   margin-bottom: 10px;
-  display: block;
+  position: relative;
+  border-radius: 16px;
+  background-color: white;
+  border: 2px solid #1B1B1B;
+  box-sizing: border-box;
+  box-shadow: 6px 6px 0px hsl(181.76, 100%, 80%);
+  border-radius: 8px;
 }
 
-.cart-icon-container {
-  margin-bottom: 20px;
-  padding: 7px 0;
-  font-size: 24px;
+.buyer-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  width: 100%;
+  height: auto;
 }
 
-.cart-btn {
-  font-family: 'Oswald', sans-serif;
-  font-size: 20px;
-  font-weight: 500;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+.payment-heading {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+h1 {
+  margin-left: 10px;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+h2 {
+  font-size: 1.2rem;
+}
+
+label {
+  font-weight: 600;
+}
+
+input {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin-top: 10px;
+  padding: 16px 24px;
+  width: 90%;
+  height: 15%;
+  left: 1048px;
+  top: 16px;
+  background: #FFFFFF;
+  border: 2px solid #1B1B1B;
+  box-sizing: border-box;
+  border-radius: 16px;
+  transition: 0.2s;
+}
+
+.image-container {
+  width: 100%;
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  background-color: hsl(181.76, 100%, 80%);
-  color: hsl(0, 0%, 0%);
-  padding: 12px;
-  margin: 10px 0;
-  border: none;
-  width: 100%;
-  border-radius: 3px;
-  cursor: pointer;
 }
 
-.cart-btn:hover {
-  background-color: hsl(0, 0%, 0%);
+.image-container img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
+  background: hsl(181.76, 100%, 80%);
+  border: 3px solid #1B1B1B;
+  border-radius: 16px;
+}
+
+.exp-cvc {
+  justify-self: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+}
+
+.expiration {
+  font-size: 0.75rem;
+  width: 50%;
+  margin-right: 20px;
+}
+
+.security {
+  font-size: 0.75rem;
+  width: 50%;
+  margin-left: 20px;
+}
+
+.payment-btn {
+  background-color: hsl(181.76, 100%, 80%);
+  border: 2px solid #1B1B1B;
+  box-sizing: border-box;
+  border-radius: 16px;
+  font-weight: 800;
+  margin-top: 20px;
+  width: 141px;
+  height: 56px;
+  left: 16px;
+  top: 88px;
+  align-items: center;
+  align-self: flex-end;
+  transition: 0.16s ease-out;
+}
+
+.payment-btn button {
+  padding: 16px 16px 16px 16px;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+}
+
+.payment-btn:hover {
+  box-shadow: 0px 0px 0px 3px #1B1B1B;
+}
+
+.payment-btn:active {
+  background: hsl(181.76, 100%, 70%);
+  border: 4px solid #1B1B1B;
+  box-sizing: border-box;
+  box-shadow: 0px 0px 0px 2px;
+  border-radius: 16px;
+}
+
+.countdown-container {
+  margin-top: 20px;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
+  background-color: hsl(181.76, 100%, 80%);
+  padding: 15px;
+  border: 2px solid #1B1B1B;
+  border-radius: 16px;
+  box-shadow: 6px 6px 0px hsl(181.76, 100%, 70%);
+}
+
+/* summary.php css */
+.hide-price {
+  display: flex;
+  align-items: center;
+}
+
+.hide-price input {
+  margin-right: 5px;
+}
+
+.ticket-item {
+  border-bottom: 1px dashed #ccc;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.ticket-type {
+  display: flex;
+  align-items: center;
+}
+
+.ticket-icon {
+  background-color: #4a7c59;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.ticket-price {
+  font-weight: bold;
+}
+
+.ticket-details {
+  background-color: #f8f0f0;
+  padding: 10px;
+}
+
+
+.details-row:last-child {
+  border-bottom: none;
+}
+
+.details-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 5px 0;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 5px;
+}
+
+.total-amount {
+  display: flex;
+  justify-content: flex-end;
+  font-weight: bold;
+  margin: 10px 0 10px 0;
+  width: 100%;
+  align-items: right;
+}
+/* End of summary.php css */
+
+/* payment_Method.php css */
+.payment-method-total-amount {
+  font-size: 23px;
+  margin: 20px 0;
+  text-align: center;
+  width: 100%;
+}
+
+.payment-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.payment-option {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.payment-option.selected,
+.payment-option:hover {
+  background-color: hsl(181.76, 100%, 80%);
+  border: 2px solid #1B1B1B;
+}
+
+.payment-option img {
+  width: 40px;
+  margin-right: 10px;
+}
+
+.payment-option.selected {
+  border-color: hsl(181.76, 100%, 60%);
+  background-color: hsl(181.76, 100%, 90%);
+}
+ 
+input[type='radio'] {
+  display: inline-block;
+}
+
+/* End payment_Method.php css */
+
+/* payment_successful.php css */
+.payment_successful {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.payment_successful h1 {
+  color: #f8f0f0;
+}
+
+.payment_successful a {
+  color: #f8f0f0;
+}
+
+.payment_successful a:hover {
   color: hsl(181.76, 100%, 80%);
 }
 
-.cart-a {
-  color: #2196F3;
+/* End payment_successful.php css */
+
+.cart-col-10 {
+  flex: 0 0 10%;
+  max-width: 10%;
 }
 
-.cart-hr {
-  border: 1px solid lightgrey;
+.cart-col-70 {
+  flex: 0 0 70%;
+  max-width: 70%;
 }
 
-span.cart-price {
-  float: right;
-  color: grey;
+.cart-col-20 {
+  flex: 0 0 20%;
+  max-width: 20%;
 }
 
-.cart-del-btn {
-  background-color: red;
-  color: white;
-  padding-left: 2px;
-  padding-right: 2px;
+.cart-col-25 {
+  flex: 0 0 25%;
+  max-width: 25%;
+}
+
+.cart-col-25 {
+  flex: 0 0 25%;
+  max-width: 25%;
+}
+
+.cart-col-75 {
+  flex: 0 0 70%;
+  max-width: 70%;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.font-s {
+  font-size: 1.8rem;
+}
+
+.align-center {
   text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
 }
 
-/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other (also change the direction - make the "cart" column go on top) */
-@media (max-width: 800px) {
-  .cart-row {
-    flex-direction: column-reverse;
+.align-right {
+  text-align: right;
+}
+
+.margin-s {
+  margin: .5rem;
+}
+
+.color-eblue {
+  color: hsl(181.76, 100%, 80%) !important;
+}
+
+.card-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-footer {
+  padding:1.5rem;
+  border-top: 2px solid #f3f4f6;
+}
+
+@media (max-width: 768px) {
+  .payment-form {
+    flex-direction: column;
+      margin-top: 145px;
   }
+  
+  .cart-col-75, .cart-col-25 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
   .cart-col-25 {
-    margin-bottom: 20px;
+    order: 1;
+  }
+
+  .cart-col-75 {
+    order: 2;
   }
 }

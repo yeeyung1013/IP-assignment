@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test PHP Web Service</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const apiUrl = 'http://localhost/villain_sf/assets/api/paymentApi.php';
+
+            function fetchPayment(paymentId) {
+                fetch(`${apiUrl}?endpoint=payment/${paymentId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(`Payment ${paymentId}:`, data);
+                        document.getElementById('payment').textContent = JSON.stringify(data, null, 2);
+                    })
+                    .catch(error => console.error(`Error fetching payment ${paymentId}:`, error));
+            }
+
+            document.getElementById('fetch-payment').addEventListener('click', function() {
+                const paymentId = document.getElementById('payment-id').value;
+                fetchPayment(paymentId);
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Test PHP Web Service</h1>
+    <button id="fetch-payment">Get Payment Details by Customer ID</button>
+    <input type="text" id="payment-id" placeholder="Enter Customer ID">
+    
+    <h2>Payment Details</h2>
+    <pre id="payment"></pre>
+</body>
+</html>

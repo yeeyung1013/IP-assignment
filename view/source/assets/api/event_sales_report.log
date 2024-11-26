@@ -1,0 +1,11 @@
+2024-09-22 02:14:22,559 - INFO - Displaying main menu
+2024-09-22 02:14:40,400 - INFO - Admin Gary Ong logged in successfully
+2024-09-22 02:14:40,401 - INFO - Admin Gary Ong accessing the main menu
+2024-09-22 02:14:43,894 - INFO - Admin Gary Ong requested event details
+2024-09-22 02:14:43,909 - INFO - Admin Gary Ong accessing the main menu
+2024-09-22 02:14:49,524 - INFO - Admin Gary Ong is viewing sales report for event ID: 1
+2024-09-22 02:14:54,137 - INFO - Generating Excel report for event ID: 1
+2024-09-22 02:14:54,654 - INFO - Excel report generated successfully
+2024-09-22 02:16:09,686 - INFO - Displaying main menu
+2024-09-22 02:16:21,303 - WARNING - Failed login attempt
+2024-09-22 02:16:21,303 - INFO - Displaying main menu
