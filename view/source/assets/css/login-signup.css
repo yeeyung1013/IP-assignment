@@ -1,0 +1,253 @@
+/* LOGIN / SIGN IN */
+/* Full-width input fields */
+.login-input, .passReset-input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+
+/* Set a style for all buttons */
+.login-btn, .passReset-btn {
+  background-color: hsl(181.76, 100%, 80%);
+  color: hsl(234, 14%, 14%);
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.login-btn:hover, .passReset-btn:hover {
+  opacity: 0.8;
+}
+
+/* Extra styles for the cancel button */
+.login-cancelbtn, .passReset-cancelbtn {
+  width: auto;
+  padding: 10px 18px;
+  background-color: #f44336;
+  display: initial;
+  
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+/* Center the image and position the close button */
+.login-imgcontainer {
+  text-align: center;
+  margin: 24px 0 12px 0;
+  /* position: relative;*/
+}
+
+img.login-avatar {
+  width: 40%;
+  border-radius: 50%;
+}
+
+.login-container, .passReset-container {
+  padding: 16px;
+}
+
+.login-psw{
+  float: right;
+  padding-top: 16px;
+  display: initial;
+}
+
+.login-reset-a{
+    display: initial;
+}
+
+/* The Modal (background) */
+.login, .passReset {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 2; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  padding-top: 60px;
+}
+
+/* Modal Content/Box */
+.login-content, .passReset-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button (x) */
+.login-close {
+  position: absolute;
+  right: 25px;
+  top: 0;
+  color: #000;
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.login-close:hover,
+.login-close:focus {
+  color: red;
+  cursor: pointer;
+}
+
+/* Add Zoom Animation */
+.login-animate, .passReset-animate {
+  -webkit-animation: animatezoom 0.6s;
+  animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom {
+  from {-webkit-transform: scale(0)} 
+  to {-webkit-transform: scale(1)}
+}
+  
+@keyframes animatezoom {
+  from {transform: scale(0)} 
+  to {transform: scale(1)}
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+  span.psw {
+     display: block;
+     float: none;
+  }
+  .login-cancelbtn, .passReset-cancelbtn {
+     width: 100%;
+  }
+}
+
+/* SIGN UP */
+/* Full-width input fields */
+.signup-input {
+  width: 100%; 
+  padding: 15px; 
+  margin: 5px 0 22px 0; 
+  display: inline-block; 
+  border: none; 
+  background: #f1f1f1; 
+}
+
+
+/* Add a background color when the inputs get focus */
+.signup-input:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+/* Set a style for all buttons */
+.signup-btn {
+  background-color: hsl(181.76, 100%, 80%);
+  color: hsl(234, 14%, 14%);
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+  
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.signup-btn:hover {
+  opacity:1;
+}
+
+/* Extra styles for the cancel button */
+.signup-cancelbtn {
+  padding: 14px 20px;
+  background-color: #f44336;
+  
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+/* Float cancel and signup buttons and add an equal width */
+.signup-cancelbtn, .signupbtn {
+  float: left;
+  width: 50%;
+}
+
+/* Add padding to container elements */
+.signup-container {
+  padding: 16px;
+}
+
+/* The signup (background) */
+.signup {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 2; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  padding-top: 50px;
+}
+
+/* Signup Content/Box */
+.signup-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* Style the horizontal ruler */
+.signup-hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 25px;
+}
+ 
+/* The Close Button (x) */
+.signup-close {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #f1f1f1;
+}
+
+.signup-close:hover,
+.close:focus {
+  color: #f44336;
+  cursor: pointer;
+}
+
+/* Clear floats */
+.signup-clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Change styles for cancel button and signup button on extra small screens */
+@media screen and (max-width: 300px) {
+  .signup-cancelbtn, .signupbtn {
+     width: 100%;
+  }
+}
+
